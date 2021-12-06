@@ -266,12 +266,17 @@ class OpenIdConnect {
   static Future<void> logout({required LogoutRequest request}) async {
     if (request.configuration.endSessionEndpoint == null) return;
 
-    final url = Uri.parse(request.configuration.endSessionEndpoint!)
-        .replace(queryParameters: request.toMap());
+    final endSessionEndpoint = Uri.parse(request.configuration.endSessionEndpoint!);
+    final uri = endSessionEndpoint.replace(
+      queryParameters: <String, String>{
+        ...endSessionEndpoint.queryParameters,
+        ...request.toMap(),
+      },
+    );
 
     try {
       await httpRetry(
-        () => http.get(url),
+        () => http.get(uri),
       );
     } on HttpResponseException catch (e) {
       throw LogoutException(e.toString());

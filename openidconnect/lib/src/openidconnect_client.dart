@@ -283,6 +283,9 @@ class OpenIdConnectClient {
       );
     } on Exception {}
 
+    _identity = null;
+    await OpenIdIdentity.clear();
+
     _raiseEvent(AuthEvent(AuthEventTypes.NotLoggedIn));
   }
 
